@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "awareness-without-synthesis"
+version = "1.0.0"
+description = "Diagnostic toolkit for measuring hidden vocabulary fragmentation using Cross-Cluster Semantic Coverage (CSC)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+
+authors = [
+    { name = "Ana Bossler" },
+    { name = "Enric Bas" },
+    { name = "Andrés Fullana" }
+]
+
+keywords = [
+    "Awareness Without Synthesis",
+    "Cross-Cluster Semantic Coverage",
+    "CSC",
+    "semantic alignment",
+    "knowledge graphs",
+    "vocabulary fragmentation",
+    "diagnostic toolkit"
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering"
+]
+
+dependencies = [
+    "numpy>=1.21",
+    "pandas>=1.3",
+    "scipy>=1.7",
+    "matplotlib>=3.4"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7"
+]
+
+[project.scripts]
+aws-align = "aws_align.cli:main"
+
+[project.urls]
+Repository = "https://github.com/E4CE-UA/awareness-without-synthesis"
+Issues = "https://github.com/E4CE-UA/awareness-without-synthesis/issues"
+
+[tool.setuptools]
+packages = ["aws_align"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
