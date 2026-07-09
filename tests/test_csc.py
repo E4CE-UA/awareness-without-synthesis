@@ -1,9 +1,6 @@
 """
 Reproduction tests for the canonical aws-align numbers.
 
-The bundled plastics/recycling demo data must reproduce the published headline
-values (Scientometrics LLM4SCIM manuscript):
-
     S_cross = 0.617      cross-cluster citation coupling
     D_bar   = 0.976      mean pairwise vocabulary divergence
     CSC     = 0.402      = 1 - (S_cross * D_bar)
