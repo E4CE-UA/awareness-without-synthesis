@@ -23,6 +23,7 @@ keywords = [
     "semantic alignment",
     "knowledge graphs",
     "vocabulary fragmentation",
+    "semantic fragmentation",
     "diagnostic toolkit"
 ]
 
@@ -32,6 +33,10 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering"
 ]
 
@@ -52,6 +57,7 @@ aws-align = "aws_align.cli:main"
 
 [project.urls]
 Repository = "https://github.com/E4CE-UA/awareness-without-synthesis"
+Documentation = "https://github.com/E4CE-UA/awareness-without-synthesis"
 Issues = "https://github.com/E4CE-UA/awareness-without-synthesis/issues"
 
 [tool.setuptools]
