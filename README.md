@@ -113,21 +113,6 @@ pip install -e ".[dev]"
 pytest
 ```
 
-## Data and archival
-
-- **Software (this package):** archived at Zenodo, DOI
-  [10.5281/zenodo.XXXXXXXX](https://doi.org/10.5281/zenodo.XXXXXXXX). <!-- TODO: DOI del depósito del paquete -->
-- **Datasets, pre-computed embeddings, and verified citation pairs:** archived
-  in a separate Zenodo deposit, DOI
-  [10.5281/zenodo.YYYYYYYY](https://doi.org/10.5281/zenodo.YYYYYYYY). <!-- TODO: DOI del depósito de datos (bibliometric_api v2) -->
-
-## Citation
-
-If you use this software in academic work, please cite it using the metadata
-in [`CITATION.cff`](CITATION.cff) or the software DOI above. Citation
-information for the accompanying publication will be added here upon
-publication.
-
 ## License
 
 This project is distributed under the [MIT License](LICENSE).
