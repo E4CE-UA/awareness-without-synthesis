@@ -18,100 +18,58 @@ measuring that structural–lexical mismatch.
 
 The CSC-score combines two complementary quantities defined for a specific partition of a scholarly corpus.
 
-### 1. Cross-cluster citation fraction
-
-```math
-S^{\mathrm{cross}}
+### 1. Cross-cluster citation fraction$$S^{\mathrm{cross}}
 =
-\frac{E_{\mathrm{cross}}}{E_{\mathrm{within\ corpus}}}
-```
+\frac{E_{\mathrm{cross}}}{E_{\mathrm{within\ corpus}}}$$where:
 
-where:
-
-- \(E_{\mathrm{within\ corpus}}\) is the number of citation edges whose source
+-$E_{\mathrm{within\ corpus}}$is the number of citation edges whose source
   and target both belong to the corpus;
-- \(E_{\mathrm{cross}}\) is the number of those edges that connect different
+-$E_{\mathrm{cross}}$is the number of those edges that connect different
   clusters.
 
-A high \(S^{\mathrm{cross}}\) means that the subdomains cite one another
+A high$S^{\mathrm{cross}}$means that the subdomains cite one another
 frequently.
 
 ### 2. Vocabulary divergence
 
-For each unordered pair of clusters \((i,j)\), the ranked-vocabulary divergence
-is:
-
-```math
-D_{ij}=1-\mathrm{RBO}(L_i,L_j)
-```
-
-where \(L_i\) and \(L_j\) are ranked characteristic-term lists, usually
+For each unordered pair of clusters$(i,j)$, the ranked-vocabulary divergence
+is:$$D_{ij}=1-\mathrm{RBO}(L_i,L_j)$$where$L_i$and$L_j$are ranked characteristic-term lists, usually
 constructed with class-based TF–IDF.
 
-The package reports two summaries:
-
-```math
-\bar D=\frac{1}{\binom{k}{2}}\sum_{i<j}D_{ij}
-```
-
-and the canonical exposure-weighted divergence:
-
-```math
-\bar D_w=\sum_{i<j}w_{ij}D_{ij}.
-```
-
-Let \(e_i\) be the number of cross-cluster citation edges originating from
-cluster \(i\). Pair weights are:
-
-```math
-w_{ij}
+The package reports two summaries:$$\bar D=\frac{1}{\binom{k}{2}}\sum_{i<j}D_{ij}$$and the canonical exposure-weighted divergence:$$\bar D_w=\sum_{i<j}w_{ij}D_{ij}.$$Let$e_i$be the number of cross-cluster citation edges originating from
+cluster$i$. Pair weights are:$$w_{ij}
 =
 \frac{e_i e_j}
-{\sum_{p<q}e_p e_q}.
-```
-
-These weights give greater importance to vocabulary interfaces involving
+{\sum_{p<q}e_p e_q}.$$These weights give greater importance to vocabulary interfaces involving
 clusters that participate more heavily in cross-cluster citation flow. They
 are an exposure allocation and should not be interpreted as the literal
 observed proportion of citations between a specific pair of clusters.
 
-### 3. Fragmentation and coherence
-
-```math
-\mathrm{fragmentation}
+### 3. Fragmentation and coherence$$\mathrm{fragmentation}
 =
-S^{\mathrm{cross}}\bar D_w
-```
-
-```math
-\mathrm{CSC}
+S^{\mathrm{cross}}\bar D_w$$$$\mathrm{CSC}
 =
-1-\mathrm{fragmentation}.
-```
-
-Interpretation:
+1-\mathrm{fragmentation}.$$Interpretation:
 
 - **CSC near 1:** citation-connected clusters also use relatively aligned
   vocabularies;
 - **low CSC:** extensive cross-cluster citation flow coexists with strong
   vocabulary divergence—the awareness-without-synthesis regime.
 
-The unweighted \(\bar D\) is retained as a descriptive statistic, but it does
+The unweighted$\bar D$is retained as a descriptive statistic, but it does
 **not** enter the canonical CSC formula.
 
 ## Important methodological properties
 
 - The core CSC computation is encoder-free and requires only citation counts
   and pairwise ranked-vocabulary divergences.
-- \(S^{\mathrm{cross}}\) and the resulting CSC are
+-$S^{\mathrm{cross}}$and the resulting CSC are
   **partition-dependent**. They can change with the number, sizes, and
   composition of clusters.
 - Cross-corpus comparisons should therefore report the clustering procedure
-  and, where relevant, sensitivity to \(k\).
-- The optional size-mixing null included in the package applies only to
-  \(S^{\mathrm{cross}}\). It is not a null distribution for the full CSC.
-- A full label-permutation null must recompute cluster vocabularies,
-  \(D_{ij}\), \(\bar D_w\), and CSC from document-level data after each
+  and, where relevant, sensitivity to$k$.
+- The optional size-mixing null included in the package applies only to$S^{\mathrm{cross}}$. It is not a null distribution for the full CSC.
+- A full label-permutation null must recompute cluster vocabularies,$D_{ij}$,$\bar D_w$, and CSC from document-level data after each
   permutation.
 
 ## Canonical demo
@@ -126,11 +84,11 @@ The canonical result is:
 | Clusters | 6 |
 | Within-corpus citation edges | 1,951 |
 | Cross-cluster citation edges | 1,204 |
-| \(S^{\mathrm{cross}}\) | 0.617 |
-| Unweighted \(\bar D\) | 0.976 |
-| Exposure-weighted \(\bar D_w\) | 0.969 |
-| Fragmentation \(=S^{\mathrm{cross}}\bar D_w\) | 0.598 |
-| CSC \(=1-\mathrm{fragmentation}\) | 0.402 |
+|$S^{\mathrm{cross}}$| 0.617 |
+| Unweighted$\bar D$| 0.976 |
+| Exposure-weighted$\bar D_w$| 0.969 |
+| Fragmentation$=S^{\mathrm{cross}}\bar D_w$| 0.598 |
+| CSC$=1-\mathrm{fragmentation}$| 0.402 |
 
 The high cross-cluster citation fraction shows substantial structural
 awareness, while the near-total vocabulary divergence indicates weak lexical
@@ -335,7 +293,7 @@ A square divergence matrix is also accepted. The first column must contain the
 cluster identifiers, the remaining columns must use the same identifiers, and
 the diagonal must represent zero divergence.
 
-All \(D_{ij}\) values must lie in \([0,1]\).
+All$D_{ij}$values must lie in$[0,1]$.
 
 ### Cluster sizes for the auxiliary structural null
 
@@ -352,8 +310,7 @@ Cluster sizes are computed by counting papers per cluster.
 
 ## Auxiliary size-mixing null
 
-The optional null asks whether the observed
-\(S^{\mathrm{cross}}\) differs from random mixing expected from cluster sizes.
+The optional null asks whether the observed$S^{\mathrm{cross}}$differs from random mixing expected from cluster sizes.
 
 Under this null, the observed number of within-corpus citation edges is
 distributed over possible within- and cross-cluster document pairs with weights
@@ -370,10 +327,10 @@ aws-align diagnose \
 
 The output reports:
 
-- null mean of \(S^{\mathrm{cross}}\);
+- null mean of$S^{\mathrm{cross}}$;
 - null standard deviation;
-- descriptive \(z\)-score;
-- empirical \(p\)-value with a plus-one correction.
+- descriptive$z$-score;
+- empirical$p$-value with a plus-one correction.
 
 This analysis concerns the structural component only. It does not replace the
 full size-preserving label-permutation analysis required to test the composite
@@ -457,11 +414,11 @@ The suite should also test:
 - the identity
   `CSC == 1 - (S_cross * D_bar_w)`;
 - complete and unique unordered cluster pairs;
-- valid divergence values in \([0,1]\);
+- valid divergence values in$[0,1]$;
 - pair weights summing to one;
-- CSC remaining in \([0,1]\);
+- CSC remaining in$[0,1]$;
 - reproducibility of seeded auxiliary null draws;
-- empirical \(p\)-values using the plus-one correction.
+- empirical$p$-values using the plus-one correction.
 
 ## Scope
 
