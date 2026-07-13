@@ -16,59 +16,54 @@ measuring that structural–lexical mismatch.
 
 ## What the diagnostic measures
 
-The CSC-score combines two complementary quantities defined for a specific partition of a scholarly corpus.
+The CSC-score combines two complementary quantities defined for a specific
+partition of a scholarly corpus.
 
 ### 1. Cross-cluster citation fraction
 
-```math
-S^{\mathrm{cross}}
-=
-\frac{E_{\mathrm{cross}}}{E_{\mathrm{within\ corpus}}}
+```text
+S_cross = E_cross / E_within_corpus
 ```
 
 where:
 
-- $E_{\mathrm{within\ corpus}}$ is the number of citation edges whose source
-  and target both belong to the corpus;
-- $E_{\mathrm{cross}}$ is the number of those edges that connect different
-  clusters.
+- `E_within_corpus` is the number of citation edges whose source and target
+  both belong to the corpus;
+- `E_cross` is the number of those edges that connect different clusters.
 
-A high $S^{\mathrm{cross}}$ means that the subdomains cite one another
-frequently.
+A high `S_cross` means that the subdomains cite one another frequently.
 
 ### 2. Vocabulary divergence
 
-For each unordered pair of clusters $(i,j)$, the ranked-vocabulary divergence
-is:
+For every unordered cluster pair `(i, j)`, ranked-vocabulary divergence is:
 
-```math
-D_{ij}=1-\mathrm{RBO}(L_i,L_j)
+```text
+D_ij = 1 - RBO(L_i, L_j)
 ```
 
-where $L_i$ and $L_j$ are ranked characteristic-term lists, usually
+where `L_i` and `L_j` are ranked characteristic-term lists, usually
 constructed with class-based TF–IDF.
 
-The package reports two summaries:
+The package reports two divergence summaries.
 
-```math
-\bar D=\frac{1}{\binom{k}{2}}\sum_{i<j}D_{ij}
+Unweighted mean divergence:
+
+```text
+D_bar = mean(D_ij over all unordered cluster pairs)
 ```
 
-and the canonical exposure-weighted divergence:
+Canonical exposure-weighted divergence:
 
-```math
-\bar D_w=\sum_{i<j}w_{ij}D_{ij}.
+```text
+raw_weight_ij = e_i * e_j
+
+w_ij = raw_weight_ij / sum(raw_weight_pq over all unordered pairs)
+
+D_bar_w = sum(w_ij * D_ij over all unordered pairs)
 ```
 
-Let $e_i$ be the number of cross-cluster citation edges originating from
-cluster $i$. Pair weights are:
-
-```math
-w_{ij}
-=
-\frac{e_i e_j}
-{\sum_{p<q}e_p e_q}.
-```
+Here, `e_i` is the number of cross-cluster citation edges originating from
+cluster `i`.
 
 These weights give greater importance to vocabulary interfaces involving
 clusters that participate more heavily in cross-cluster citation flow. They
@@ -77,16 +72,10 @@ observed proportion of citations between a specific pair of clusters.
 
 ### 3. Fragmentation and coherence
 
-```math
-\mathrm{fragmentation}
-=
-S^{\mathrm{cross}}\bar D_w
-```
+```text
+fragmentation = S_cross * D_bar_w
 
-```math
-\mathrm{CSC}
-=
-1-\mathrm{fragmentation}.
+CSC = 1 - fragmentation
 ```
 
 Interpretation:
@@ -96,41 +85,37 @@ Interpretation:
 - **low CSC:** extensive cross-cluster citation flow coexists with strong
   vocabulary divergence—the awareness-without-synthesis regime.
 
-The unweighted $\bar D$ is retained as a descriptive statistic, but it does
-**not** enter the canonical CSC formula.
+`D_bar` is retained as a descriptive statistic, but it does **not** enter the
+canonical CSC formula.
 
 ## Important methodological properties
 
 - The core CSC computation is encoder-free and requires only citation counts
   and pairwise ranked-vocabulary divergences.
-- $S^{\mathrm{cross}}$ and the resulting CSC are
-  **partition-dependent**. They can change with the number, sizes, and
-  composition of clusters.
+- `S_cross` and the resulting CSC are **partition-dependent**. They can change
+  with the number, sizes, and composition of clusters.
 - Cross-corpus comparisons should therefore report the clustering procedure
-  and, where relevant, sensitivity to $k$.
+  and, where relevant, sensitivity to `k`.
 - The optional size-mixing null included in the package applies only to
-  $S^{\mathrm{cross}}$. It is not a null distribution for the full CSC.
-- A full label-permutation null must recompute cluster vocabularies,
-  $D_{ij}$, $\bar D_w$, and CSC from document-level data after each
-  permutation.
+  `S_cross`. It is not a null distribution for the full CSC.
+- A full label-permutation null must recompute cluster vocabularies, `D_ij`,
+  `D_bar_w`, and CSC from document-level data after each permutation.
 
 ## Canonical demo
 
 The bundled demo tables in `data/demo/` describe a plastic-recycling corpus of
 3,138 publications partitioned into six subdomains.
 
-The canonical result is:
-
 | Quantity | Value |
 |---|---:|
 | Clusters | 6 |
 | Within-corpus citation edges | 1,951 |
 | Cross-cluster citation edges | 1,204 |
-| $S^{\mathrm{cross}}$ | 0.617 |
-| Unweighted $\bar D$ | 0.976 |
-| Exposure-weighted $\bar D_w$ | 0.969 |
-| Fragmentation $=S^{\mathrm{cross}}\bar D_w$ | 0.598 |
-| CSC $=1-\mathrm{fragmentation}$ | 0.402 |
+| `S_cross` | 0.617 |
+| Unweighted `D_bar` | 0.976 |
+| Exposure-weighted `D_bar_w` | 0.969 |
+| `fragmentation = S_cross * D_bar_w` | 0.598 |
+| `CSC = 1 - fragmentation` | 0.402 |
 
 The high cross-cluster citation fraction shows substantial structural
 awareness, while the near-total vocabulary divergence indicates weak lexical
@@ -214,10 +199,11 @@ CSC diagnostic — Plastic recycling
   CSC                  ≈ 0.402
 ```
 
-The pairwise audit table is available as:
+The pairwise audit table is available through `result.pairwise`.
 
 ```python
 pairwise = result.pairwise
+
 print(
     pairwise[
         [
@@ -234,9 +220,6 @@ print(
 ```
 
 ## Command line
-
-Every subcommand can use explicit input paths. The bundled demo files are used
-when the corresponding input is omitted.
 
 ### Compute the CSC-score
 
@@ -286,8 +269,6 @@ aws-align <subcommand> --help
 
 ### Citation insularity
 
-The loader accepts either of the following schemas.
-
 Canonical format:
 
 ```csv
@@ -300,7 +281,7 @@ C6,75,153
 C7,136,383
 ```
 
-Alternative format:
+Alternative accepted format:
 
 ```csv
 cluster,internal_citations,total_citations
@@ -308,14 +289,14 @@ C2,15,53
 C3,22,234
 ```
 
-Both are normalised internally to:
+Both formats are normalised internally to:
 
 ```text
 cluster, intra_edges, total_edges
 ```
 
 The citation counts must refer to **within-corpus** edges. Citations from corpus
-papers to works outside the corpus should not be included in this table.
+papers to works outside the corpus should not be included.
 
 ### Pairwise vocabulary divergence
 
@@ -335,7 +316,7 @@ A square divergence matrix is also accepted. The first column must contain the
 cluster identifiers, the remaining columns must use the same identifiers, and
 the diagonal must represent zero divergence.
 
-All $D_{ij}$ values must lie in $[0,1]$.
+All `D_ij` values must lie in the interval `[0, 1]`.
 
 ### Cluster sizes for the auxiliary structural null
 
@@ -352,14 +333,8 @@ Cluster sizes are computed by counting papers per cluster.
 
 ## Auxiliary size-mixing null
 
-The optional null asks whether the observed
-$S^{\mathrm{cross}}$ differs from random mixing expected from cluster sizes.
-
-Under this null, the observed number of within-corpus citation edges is
-distributed over possible within- and cross-cluster document pairs with weights
-proportional to cluster sizes.
-
-Example:
+The optional null asks whether the observed `S_cross` differs from random
+mixing expected from cluster sizes.
 
 ```bash
 aws-align diagnose \
@@ -370,10 +345,10 @@ aws-align diagnose \
 
 The output reports:
 
-- null mean of $S^{\mathrm{cross}}$;
+- null mean of `S_cross`;
 - null standard deviation;
-- descriptive $z$-score;
-- empirical $p$-value with a plus-one correction.
+- descriptive z-score;
+- empirical p-value with a plus-one correction.
 
 This analysis concerns the structural component only. It does not replace the
 full size-preserving label-permutation analysis required to test the composite
@@ -382,12 +357,10 @@ CSC.
 ## Optional LLM vocabulary alignment
 
 The CSC diagnostic itself does not use an LLM. The optional alignment layer
-asks multiple models to propose cross-cluster vocabulary bridges and then
-retains only cross-model consensus.
+asks multiple models to propose cross-cluster vocabulary bridges and retains
+only cross-model consensus.
 
 ### Offline reproduction
-
-Archived raw responses can be processed without network access:
 
 ```bash
 aws-align align \
@@ -435,13 +408,13 @@ near-synonyms.
 
 ## Tests
 
-Run the regression suite from the repository root:
+Run the regression suite:
 
 ```bash
 pytest -v
 ```
 
-The canonical tests should verify approximately:
+Canonical regression values:
 
 ```text
 S_cross       = 0.617
@@ -454,14 +427,13 @@ n_clusters    = 6
 
 The suite should also test:
 
-- the identity
-  `CSC == 1 - (S_cross * D_bar_w)`;
+- `CSC == 1 - (S_cross * D_bar_w)`;
 - complete and unique unordered cluster pairs;
-- valid divergence values in $[0,1]$;
+- valid divergence values in `[0, 1]`;
 - pair weights summing to one;
-- CSC remaining in $[0,1]$;
+- CSC remaining in `[0, 1]`;
 - reproducibility of seeded auxiliary null draws;
-- empirical $p$-values using the plus-one correction.
+- empirical p-values using the plus-one correction.
 
 ## Scope
 
