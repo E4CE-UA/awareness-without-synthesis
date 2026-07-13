@@ -16,16 +16,15 @@ measuring that structural–lexical mismatch.
 
 ## What the diagnostic measures
 
-The CSC-score combines two complementary quantities defined for a specific
-partition of a scholarly corpus.
+The CSC-score combines two complementary quantities defined for a specific partition of a scholarly corpus.
 
 ### 1. Cross-cluster citation fraction
 
-\[
+```math
 S^{\mathrm{cross}}
 =
 \frac{E_{\mathrm{cross}}}{E_{\mathrm{within\ corpus}}}
-\]
+```
 
 where:
 
@@ -42,34 +41,34 @@ frequently.
 For each unordered pair of clusters \((i,j)\), the ranked-vocabulary divergence
 is:
 
-\[
+```math
 D_{ij}=1-\mathrm{RBO}(L_i,L_j)
-\]
+```
 
 where \(L_i\) and \(L_j\) are ranked characteristic-term lists, usually
 constructed with class-based TF–IDF.
 
 The package reports two summaries:
 
-\[
+```math
 \bar D=\frac{1}{\binom{k}{2}}\sum_{i<j}D_{ij}
-\]
+```
 
 and the canonical exposure-weighted divergence:
 
-\[
+```math
 \bar D_w=\sum_{i<j}w_{ij}D_{ij}.
-\]
+```
 
 Let \(e_i\) be the number of cross-cluster citation edges originating from
 cluster \(i\). Pair weights are:
 
-\[
+```math
 w_{ij}
 =
 \frac{e_i e_j}
 {\sum_{p<q}e_p e_q}.
-\]
+```
 
 These weights give greater importance to vocabulary interfaces involving
 clusters that participate more heavily in cross-cluster citation flow. They
@@ -78,17 +77,17 @@ observed proportion of citations between a specific pair of clusters.
 
 ### 3. Fragmentation and coherence
 
-\[
+```math
 \mathrm{fragmentation}
 =
 S^{\mathrm{cross}}\bar D_w
-\]
+```
 
-\[
+```math
 \mathrm{CSC}
 =
 1-\mathrm{fragmentation}.
-\]
+```
 
 Interpretation:
 
