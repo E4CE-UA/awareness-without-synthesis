@@ -1,462 +1,113 @@
-# Awareness Without Synthesis
 
-**Awareness Without Synthesis (AWS)** is a diagnostic framework for detecting
-hidden vocabulary fragmentation in scholarly knowledge graphs.
+# Awareness Without Synthesis (AWS)
 
-Citation-based interdisciplinarity measures often treat cross-domain citation
-flow as evidence of knowledge integration. That inference can fail when
-subdomains cite one another extensively while describing related phenomena in
-largely non-overlapping vocabularies. The literature is structurally aware of
-the connection, but it has not synthesised that connection into a shared
-searchable language.
+**Awareness Without Synthesis (AWS)** is a diagnostic framework designed to detect hidden vocabulary fragmentation within scholarly knowledge graphs.
 
-This repository provides the reference implementation of the
-**Cross-Subdomain Coherence score (CSC-score)**, an upstream diagnostic for
-measuring that structural–lexical mismatch.
+While high citation flow between research domains is often taken as evidence of knowledge integration, this inference can fail when subdomains cite one another extensively while describing related phenomena using entirely different vocabularies. In this scenario, the literature is *structurally aware* of the connection, but it has not *synthesized* that connection into a shared, searchable language.
 
-## What the diagnostic measures
+This repository provides the reference implementation for the **Cross-Subdomain Coherence score (CSC-score)**, a diagnostic for measuring this structural–lexical mismatch.
 
-The CSC-score combines two complementary quantities defined for a specific
-partition of a scholarly corpus.
+---
 
-### 1. Cross-cluster citation fraction
+## 1. What the diagnostic measures
 
-```text
-S_cross = E_cross / E_within_corpus
-```
+The CSC-score is derived from two complementary metrics based on a partition of a scholarly corpus.
 
-where:
+### A. Cross-cluster citation fraction ($S_{cross}$)
 
-- `E_within_corpus` is the number of citation edges whose source and target
-  both belong to the corpus;
-- `E_cross` is the number of those edges that connect different clusters.
+This measures how frequently subdomains cite one another:
 
-A high `S_cross` means that the subdomains cite one another frequently.
 
-### 2. Vocabulary divergence
+$$S_{cross} = \frac{E_{cross}}{E_{within\_corpus}}$$
 
-For every unordered cluster pair `(i, j)`, ranked-vocabulary divergence is:
+* **$E_{within\_corpus}$:** Total citation edges where both source and target belong to the corpus.
+* **$E_{cross}$:** The subset of those edges that connect different clusters.
 
-```text
-D_ij = 1 - RBO(L_i, L_j)
-```
+### B. Vocabulary divergence ($D_{ij}$)
 
-where `L_i` and `L_j` are ranked characteristic-term lists, usually
-constructed with class-based TF–IDF.
+For every unordered cluster pair $(i, j)$, divergence is calculated using the Rank-Biased Overlap (RBO) of their characteristic-term lists:
 
-The package reports two divergence summaries.
 
-Unweighted mean divergence:
+$$D_{ij} = 1 - RBO(L_i, L_j)$$
 
-```text
-D_bar = mean(D_ij over all unordered cluster pairs)
-```
 
-Canonical exposure-weighted divergence:
+The framework utilizes two summaries:
 
-```text
-raw_weight_ij = e_i * e_j
+* **Unweighted Mean Divergence ($\bar{D}$):** The simple average of all $D_{ij}$.
+* **Exposure-Weighted Divergence ($\bar{D}_w$):** Weighs divergence by the intensity of cross-cluster citation flow:
+* $w_{ij} = \frac{e_i \cdot e_j}{\sum e_p \cdot e_q}$
+* $\bar{D}_w = \sum (w_{ij} \cdot D_{ij})$
+*(Where $e_i$ is the number of cross-cluster citation edges originating from cluster $i$.)*
 
-w_ij = raw_weight_ij / sum(raw_weight_pq over all unordered pairs)
 
-D_bar_w = sum(w_ij * D_ij over all unordered pairs)
-```
 
-Here, `e_i` is the number of cross-cluster citation edges originating from
-cluster `i`.
+### C. Fragmentation and Coherence
 
-These weights give greater importance to vocabulary interfaces involving
-clusters that participate more heavily in cross-cluster citation flow. They
-are an exposure allocation and should not be interpreted as the literal
-observed proportion of citations between a specific pair of clusters.
+The final metrics are:
 
-### 3. Fragmentation and coherence
 
-```text
-fragmentation = S_cross * D_bar_w
+$$\text{fragmentation} = S_{cross} \cdot \bar{D}_w$$
 
-CSC = 1 - fragmentation
-```
+$$\text{CSC} = 1 - \text{fragmentation}$$
 
-Interpretation:
+* **CSC near 1:** Clusters are citation-connected and use aligned vocabularies.
+* **Low CSC:** High structural awareness coexists with strong vocabulary divergence.
 
-- **CSC near 1:** citation-connected clusters also use relatively aligned
-  vocabularies;
-- **low CSC:** extensive cross-cluster citation flow coexists with strong
-  vocabulary divergence—the awareness-without-synthesis regime.
+---
 
-`D_bar` is retained as a descriptive statistic, but it does **not** enter the
-canonical CSC formula.
-
-## Important methodological properties
-
-- The core CSC computation is encoder-free and requires only citation counts
-  and pairwise ranked-vocabulary divergences.
-- `S_cross` and the resulting CSC are **partition-dependent**. They can change
-  with the number, sizes, and composition of clusters.
-- Cross-corpus comparisons should therefore report the clustering procedure
-  and, where relevant, sensitivity to `k`.
-- The optional size-mixing null included in the package applies only to
-  `S_cross`. It is not a null distribution for the full CSC.
-- A full label-permutation null must recompute cluster vocabularies, `D_ij`,
-  `D_bar_w`, and CSC from document-level data after each permutation.
-
-## Canonical demo
-
-The bundled demo tables in `data/demo/` describe a plastic-recycling corpus of
-3,138 publications partitioned into six subdomains.
+## 2. Canonical Demo (Plastic Recycling Corpus)
 
 | Quantity | Value |
-|---|---:|
+| --- | --- |
 | Clusters | 6 |
 | Within-corpus citation edges | 1,951 |
 | Cross-cluster citation edges | 1,204 |
-| `S_cross` | 0.617 |
-| Unweighted `D_bar` | 0.976 |
-| Exposure-weighted `D_bar_w` | 0.969 |
-| `fragmentation = S_cross * D_bar_w` | 0.598 |
-| `CSC = 1 - fragmentation` | 0.402 |
+| **$S_{cross}$** | **0.617** |
+| Unweighted $\bar{D}$ | 0.976 |
+| Exposure-weighted $\bar{D}_w$ | 0.969 |
+| **fragmentation** | **0.598** |
+| **CSC** | **0.402** |
 
-The high cross-cluster citation fraction shows substantial structural
-awareness, while the near-total vocabulary divergence indicates weak lexical
-integration.
+---
 
-## Repository structure
+## 3. Implementation and Usage
 
-```text
-awareness-without-synthesis/
-│
-├── aws_align/
-│   ├── csc.py              # Canonical CSC computation and validation
-│   ├── io.py               # Input loaders
-│   ├── fragmentation.py    # Pairwise fragmentation visualisation
-│   ├── align.py            # Optional LLM vocabulary-alignment layer
-│   ├── cli.py              # Command-line interface
-│   └── __init__.py         # Public package exports
-│
-├── data/demo/              # Bundled plastic-recycling demo inputs
-├── examples/               # Example outputs and notebooks
-├── tests/                  # Regression and invariant tests
-├── README.md
-├── pyproject.toml
-├── requirements.txt
-└── LICENSE
-```
-
-## Installation
-
-```bash
-git clone https://github.com/E4CE-UA/awareness-without-synthesis.git
-cd awareness-without-synthesis
-pip install -e .
-```
-
-The package supports Python 3.9–3.12.
-
-For development and tests:
-
-```bash
-pip install -e ".[dev]"
-```
-
-The core diagnostic does not require an API key or an LLM dependency.
-
-## Quick start: Python
+### Quick Start: Python
 
 ```python
 from aws_align import compute_csc, load_divergence, load_insularity
 
-insularity = load_insularity(
-    "data/demo/citation_cluster_insularity.csv"
-)
-divergence = load_divergence(
-    "data/demo/rbo_fragmentation.csv"
-)
+insularity = load_insularity("data/demo/citation_cluster_insularity.csv")
+divergence = load_divergence("data/demo/rbo_fragmentation.csv")
 
-result = compute_csc(
-    insularity,
-    divergence,
-    corpus="Plastic recycling",
-    n_nulls=0,
-)
-
+result = compute_csc(insularity, divergence, corpus="Plastic recycling")
 print(result)
+
 ```
 
-Expected output:
+### Command Line Interface
 
-```text
-CSC diagnostic — Plastic recycling
-  clusters             = 6
-  unordered pairs      = 15
-  within-corpus edges  = 1,951
-  intra-cluster edges  = 747
-  cross-cluster edges  = 1,204
-  S_cross              ≈ 0.617
-  D_bar                ≈ 0.976
-  D_bar_w              ≈ 0.969
-  fragmentation        ≈ 0.598
-  CSC                  ≈ 0.402
-```
+The package provides a built-in CLI:
 
-The pairwise audit table is available through `result.pairwise`.
+* **Diagnose:** `aws-align diagnose`
+* **Map:** `aws-align map --insularity [file] --divergence [file]`
+* **Alignment:** `aws-align align` (Offline mode requires no API keys)
 
-```python
-pairwise = result.pairwise
+---
 
-print(
-    pairwise[
-        [
-            "cluster_i",
-            "cluster_j",
-            "D_ij",
-            "e_i",
-            "e_j",
-            "w_ij",
-            "weighted_D_ij",
-        ]
-    ]
-)
-```
+## 4. Key Methodological Properties
 
-## Command line
+* **Encoder-Free:** The core CSC computation relies on citation counts and ranked-vocabulary divergence, not expensive embedding models.
+* **Partition-Dependent:** Results change based on how the corpus is clustered (e.g., number of clusters $k$). Always report clustering parameters.
+* **Validation:** The optional LLM vocabulary alignment layer provides cross-model consensus, but it is an *auxiliary* step; the CSC diagnostic itself is deterministic.
 
-### Compute the CSC-score
+---
 
-```bash
-aws-align diagnose
-```
+## 5. License & Authors
 
-With explicit inputs:
+* **License:** MIT
+* **Authors:** Ana Bossler, Enric Bas, Andrés Fullana (University of Alicante)
 
-```bash
-aws-align diagnose \
-  --insularity data/demo/citation_cluster_insularity.csv \
-  --divergence data/demo/rbo_fragmentation.csv \
-  --corpus "Plastic recycling" \
-  --n-nulls 0 \
-  --out csc_pairwise.csv
-```
+---
 
-### Render the pairwise fragmentation map
-
-```bash
-aws-align map \
-  --insularity data/demo/citation_cluster_insularity.csv \
-  --divergence data/demo/rbo_fragmentation.csv \
-  --corpus "Plastic recycling" \
-  --out fragmentation_map.png
-```
-
-### Rebuild the archived alignment summary offline
-
-```bash
-aws-align align \
-  --dry-run \
-  --raw data/demo/alignment_raw.csv \
-  --out alignment_summary.csv
-```
-
-This path makes no API calls.
-
-For all options:
-
-```bash
-aws-align <subcommand> --help
-```
-
-## Input formats
-
-### Citation insularity
-
-Canonical format:
-
-```csv
-cluster,intra_edges,total_edges
-C2,15,53
-C3,22,234
-C4,96,425
-C5,403,703
-C6,75,153
-C7,136,383
-```
-
-Alternative accepted format:
-
-```csv
-cluster,internal_citations,total_citations
-C2,15,53
-C3,22,234
-```
-
-Both formats are normalised internally to:
-
-```text
-cluster, intra_edges, total_edges
-```
-
-The citation counts must refer to **within-corpus** edges. Citations from corpus
-papers to works outside the corpus should not be included.
-
-### Pairwise vocabulary divergence
-
-Long format:
-
-```csv
-cluster_a,cluster_b,D_ij
-C2,C3,1.000
-C2,C4,1.000
-C2,C5,1.000
-```
-
-The loader also accepts common value-column aliases such as `1_rbo`, `jsd`,
-`divergence`, and `value`.
-
-A square divergence matrix is also accepted. The first column must contain the
-cluster identifiers, the remaining columns must use the same identifiers, and
-the diagonal must represent zero divergence.
-
-All `D_ij` values must lie in the interval `[0, 1]`.
-
-### Cluster sizes for the auxiliary structural null
-
-The current loader accepts a paper-level topic file containing a `cluster`
-column:
-
-```csv
-paper_id,cluster
-W123,C2
-W456,C3
-```
-
-Cluster sizes are computed by counting papers per cluster.
-
-## Auxiliary size-mixing null
-
-The optional null asks whether the observed `S_cross` differs from random
-mixing expected from cluster sizes.
-
-```bash
-aws-align diagnose \
-  --sizes data/demo/paper_topics.csv \
-  --n-nulls 1000 \
-  --seed 42
-```
-
-The output reports:
-
-- null mean of `S_cross`;
-- null standard deviation;
-- descriptive z-score;
-- empirical p-value with a plus-one correction.
-
-This analysis concerns the structural component only. It does not replace the
-full size-preserving label-permutation analysis required to test the composite
-CSC.
-
-## Optional LLM vocabulary alignment
-
-The CSC diagnostic itself does not use an LLM. The optional alignment layer
-asks multiple models to propose cross-cluster vocabulary bridges and retains
-only cross-model consensus.
-
-### Offline reproduction
-
-```bash
-aws-align align \
-  --dry-run \
-  --raw data/demo/alignment_raw.csv \
-  --min-confidence 3 \
-  --min-models 2 \
-  --out alignment_summary.csv
-```
-
-### Live execution
-
-Install the optional runtime dependencies:
-
-```bash
-pip install requests python-dotenv
-```
-
-Set the OpenRouter key without committing it to the repository:
-
-```bash
-export OPENROUTER_API_KEY="your-key"
-```
-
-Then run:
-
-```bash
-aws-align align \
-  --terms data/demo/semantic_topics.csv \
-  --top-k 20 \
-  --min-confidence 3 \
-  --min-models 2 \
-  --raw-out alignment_raw_new.csv \
-  --out alignment_summary_new.csv
-```
-
-Hosted LLM outputs are best-effort reproducible rather than bit-exact, even at
-temperature 0. Raw responses should therefore be preserved together with model
-identifiers, prompt versions, and execution dates.
-
-Consensus alignment should be interpreted as cross-model agreement, not
-automatic proof that two terms are interchangeable. Query expansion should be
-restricted to relations explicitly validated as exact equivalents or
-near-synonyms.
-
-## Tests
-
-Run the regression suite:
-
-```bash
-pytest -v
-```
-
-Canonical regression values:
-
-```text
-S_cross       = 0.617
-D_bar         = 0.976
-D_bar_w       = 0.969
-fragmentation = 0.598
-CSC           = 0.402
-n_clusters    = 6
-```
-
-The suite should also test:
-
-- `CSC == 1 - (S_cross * D_bar_w)`;
-- complete and unique unordered cluster pairs;
-- valid divergence values in `[0, 1]`;
-- pair weights summing to one;
-- CSC remaining in `[0, 1]`;
-- reproducibility of seeded auxiliary null draws;
-- empirical p-values using the plus-one correction.
-
-## Scope
-
-The CSC-score is a corpus-level diagnostic, not a general retrieval benchmark
-and not a causal measure of why two communities use different vocabularies.
-
-A low CSC indicates that:
-
-1. citation links cross the selected subdomain boundaries;
-2. the corresponding ranked vocabularies remain strongly divergent;
-3. evidence retrieval across those interfaces may require explicit vocabulary
-   bridging.
-
-The magnitude of the score depends on the corpus, citation graph, text fields,
-vocabulary construction, clustering procedure, and selected partition.
-Applications should report those choices transparently.
-
-## License
-
-This project is distributed under the MIT License.
-
-## Authors
-
-- Ana Bossler — University of Alicante
-- Enric Bas — University of Alicante
-- Andrés Fullana — University of Alicante
+*Would you like to understand the theoretical implications of the "Awareness Without Synthesis" framework in the context of information retrieval, or are you looking for assistance with the repository's setup?*
