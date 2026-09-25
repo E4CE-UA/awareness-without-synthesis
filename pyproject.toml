@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "awareness-without-synthesis"
-version = "1.0.0"
-description = "Diagnostic toolkit for measuring hidden vocabulary fragmentation using Cross-Cluster Semantic Coverage (CSC)."
+version = "1.0.1"
+description = "Diagnostic toolkit for measuring hidden vocabulary fragmentation using the Cross-Subdomain Coherence score (CSC)."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
@@ -18,7 +18,7 @@ authors = [
 
 keywords = [
     "Awareness Without Synthesis",
-    "Cross-Cluster Semantic Coverage",
+    "Cross-Subdomain Coherence",
     "CSC",
     "semantic alignment",
     "knowledge graphs",

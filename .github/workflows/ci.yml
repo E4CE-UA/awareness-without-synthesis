@@ -1,0 +1,64 @@
+name: CI
+
+# Runs the full reproduction on every supported Python version, so that the
+# "40 passed" claim and the canonical CSC = 0.402 are publicly verifiable.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Byte-compile every module
+        run: python -m compileall -q aws_align tools
+
+      - name: Check demo cluster identifiers are canonical
+        run: python tools/fix_cluster_labels.py --check
+
+      - name: Test suite
+        run: python -m pytest -q
+
+      - name: Canonical CSC diagnostic
+        run: python -m aws_align.cli diagnose
+
+      - name: Assert canonical CSC equals the published value
+        run: |
+          python - <<'PY'
+          from aws_align import compute_csc, load_divergence, load_insularity
+
+          result = compute_csc(
+              load_insularity("data/demo/citation_cluster_insularity.csv"),
+              load_divergence("data/demo/rbo_fragmentation.csv"),
+          )
+          assert round(result.csc, 3) == 0.402, result.csc
+          assert round(result.S_cross, 3) == 0.617, result.S_cross
+          assert round(result.D_bar_w, 3) == 0.969, result.D_bar_w
+          print(f"canonical CSC = {result.csc:.7f}")
+          PY
+
+      - name: Fragmentation map renders
+        run: python -m aws_align.cli map --out /tmp/fragmentation_map.png
+
+      - name: Offline alignment layer runs without API keys
+        run: python -m aws_align.cli align --dry-run

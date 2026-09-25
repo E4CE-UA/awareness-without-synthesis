@@ -70,7 +70,45 @@ $$\text{CSC} = 1 - \text{fragmentation}$$
 
 ---
 
-## 3. Implementation and Usage
+## 3. Installation
+
+The package is not published on PyPI. Install it from source:
+
+```bash
+git clone https://github.com/E4CE-UA/awareness-without-synthesis.git
+cd awareness-without-synthesis
+pip install -e ".[dev]"
+```
+
+Or install a pinned revision directly:
+
+```bash
+pip install "git+https://github.com/E4CE-UA/awareness-without-synthesis.git@v1.0.1"
+```
+
+Requires Python 3.9 or newer; runtime dependencies are `numpy`, `pandas`,
+`scipy` and `matplotlib`.
+
+### Reproducing the canonical result
+
+A single command runs the whole reproduction from the bundled demo data —
+byte-compilation, test suite, CSC diagnostic, fragmentation map and the
+provenance record:
+
+```bash
+make reproduce
+```
+
+Expected output: `40 passed`, `CSC = 0.4020` and a verified
+`provenance.json`. `make check` re-verifies the SHA-256 digests and the
+canonical CSC without modifying anything.
+
+Cluster identifiers are canonical `C<n>` strings (`C2`…`C7`) in every bundled
+demo table. `python tools/fix_cluster_labels.py --check` asserts this.
+
+---
+
+## 4. Implementation and Usage
 
 ### Quick Start: Python
 
@@ -95,7 +133,7 @@ The package provides a built-in CLI:
 
 ---
 
-## 4. Key Methodological Properties
+## 5. Key Methodological Properties
 
 * **Encoder-Free:** The core CSC computation relies on citation counts and ranked-vocabulary divergence, not expensive embedding models.
 * **Partition-Dependent:** Results change based on how the corpus is clustered (e.g., number of clusters $k$). Always report clustering parameters.
@@ -103,11 +141,7 @@ The package provides a built-in CLI:
 
 ---
 
-## 5. License & Authors
+## 6. License & Authors
 
 * **License:** MIT
 * **Authors:** Ana Bossler, Enric Bas, Andrés Fullana (University of Alicante)
-
----
-
-*Would you like to understand the theoretical implications of the "Awareness Without Synthesis" framework in the context of information retrieval, or are you looking for assistance with the repository's setup?*

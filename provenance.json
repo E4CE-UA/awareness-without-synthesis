@@ -1,0 +1,63 @@
+{
+  "schema": "aws-align/provenance/1",
+  "generated_by": "tools/make_provenance.py",
+  "generated_at_utc": "2026-09-25T09:33:39+00:00",
+  "repository": "https://github.com/E4CE-UA/awareness-without-synthesis",
+  "git": {
+    "commit": "107d9ba539973bbf234ced88ad3aeca7b7f5e28b",
+    "describe": "107d9ba-dirty",
+    "dirty": true,
+    "note": "'commit' is HEAD at generation time. A record committed into the repository necessarily names its own parent commit, because writing the file changes the tree. Content integrity is pinned by 'file_digests_sha256', which 'make verify-provenance' checks independently of git."
+  },
+  "environment": {
+    "python": "3.9.15",
+    "implementation": "CPython",
+    "platform": "macOS-26.5-x86_64-i386-64bit",
+    "dependencies": {
+      "numpy": "1.26.4",
+      "pandas": "2.1.4",
+      "scipy": "1.11.4",
+      "matplotlib": "3.6.2",
+      "pytest": "7.3.1"
+    }
+  },
+  "cluster_id_convention": "Cluster identifiers are canonical 'C<n>' strings in every bundled demo table; see tools/fix_cluster_labels.py.",
+  "canonical_demo": {
+    "inputs": {
+      "insularity": "data/demo/citation_cluster_insularity.csv",
+      "divergence": "data/demo/rbo_fragmentation.csv"
+    },
+    "n_clusters": 6,
+    "n_pairs": 15,
+    "E_within_corpus": 1951,
+    "E_intra_cluster": 747,
+    "E_cross_cluster": 1204,
+    "S_cross": 0.6171194259354177,
+    "D_bar": 0.9760473136176882,
+    "D_bar_w": 0.9689718345019559,
+    "fragmentation": 0.5979713422554356,
+    "CSC": 0.4020286577445644,
+    "identity": "CSC = 1 - S_cross * D_bar_w",
+    "published_value": 0.402
+  },
+  "file_digests_sha256": {
+    "aws_align/__init__.py": "43eaa88883739e1c1395d8c2b67cc0743c42ee3b3123c80d206531196264becc",
+    "aws_align/align.py": "933c1172592df3dcc5a593194081483c7508e5534cfdabdb8ded38e3f7ecb5de",
+    "aws_align/cli.py": "381f748151da65102e16d8513f8575434391994cc73e1cd03ea23fd65532f163",
+    "aws_align/csc.py": "94776cc153d63fd9c02cef0201b84d1b7dde98ef8193424881aec9f7990ac706",
+    "aws_align/fragmentation.py": "d4b4bb789d8b8034eef642d2204a9bf5fd44e7244a44df69518505b76b9aef71",
+    "aws_align/io.py": "8b1dbef4b3f5a728c04f0057d0f54cb36d5e123a619a81ce67bebb657e2afa4e",
+    "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/test_align.py": "36a88a34898b06b96f9d037c41adaabafb1d887ed59ce6f22fedecb31a6b9473",
+    "tests/test_csc.py": "6e370a1b0f9f450867421a9653daf3bbfb6a0f2f3ca829461196453b84c9e241",
+    "tools/fix_cluster_labels.py": "745f1db27017a95d9ec9dcd684b440b8a0c3af2d3581eb8b7f4b0ea8b29289d6",
+    "tools/make_provenance.py": "8fb411bfb63a1c5962a3d80caddc95741a54a09adf58684118cce65bf139d0a9",
+    "data/demo/alignment_raw.csv": "71440cf5c8e8d2c46248461f2e9688f68c3f1d63c09b8307ee0e5910089608c7",
+    "data/demo/citation_cluster_insularity.csv": "3081df4ebc9100e41463d74da1717711f3ab15b2de2456754928026cb4930bf3",
+    "data/demo/paper_topics.csv": "867c8d3e4460ac405f9c4f9f91188d19b0bf840967caa0a02f8f8a3d10baabef",
+    "data/demo/rbo_fragmentation.csv": "1053347654e396d8844a7fe819fde303c1b9a4eb2aded6035e2c26fab9da4919",
+    "data/demo/semantic_topics.csv": "b4c6de20e87b3cbc7ed039a9516c18aaa32ca416361a988c2a5ec46a561a2d5c",
+    "pyproject.toml": "c5f3c0da2203c9389ec4d6d9ed928d1e0c91334bf25a0e046d78cfda70899856",
+    "requirements.txt": "49206b2ae4ca31d4e0fa3d688967c1623c75607a79adef73341032d95f62a02d"
+  }
+}

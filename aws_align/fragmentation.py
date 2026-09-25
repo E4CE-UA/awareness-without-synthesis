@@ -94,7 +94,11 @@ def _cluster_key(value: Any) -> str:
         if number.is_integer():
             return f"n:{int(number)}"
 
-    return f"s:{re.sub(r'\s+', ' ', text)}"
+    # NOTE: the re.sub call is kept out of the f-string expression because a
+    # backslash inside an f-string expression is a SyntaxError before Python
+    # 3.12, and this package declares support from Python 3.9 onwards.
+    collapsed = re.sub(r"\s+", " ", text)
+    return f"s:{collapsed}"
 
 
 def _display_label(
