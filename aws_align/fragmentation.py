@@ -392,8 +392,12 @@ def to_square(
         matrix.loc[cluster_a, cluster_b] = cell_value
         matrix.loc[cluster_b, cluster_a] = cell_value
 
-    np.fill_diagonal(matrix.values, diagonal)
-    return matrix
+    # NOTE: fill the diagonal on an explicit copy. Under pandas Copy-on-Write
+    # (the default from pandas 3.0) .values is a read-only view, so writing
+    # through it raises 'underlying array is read-only'.
+    values = matrix.to_numpy(dtype=float, copy=True)
+    np.fill_diagonal(values, diagonal)
+    return pd.DataFrame(values, index=matrix.index, columns=matrix.columns)
 
 
 # -----------------------------------------------------------------------------

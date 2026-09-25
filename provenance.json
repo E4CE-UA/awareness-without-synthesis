@@ -1,11 +1,11 @@
 {
   "schema": "aws-align/provenance/1",
   "generated_by": "tools/make_provenance.py",
-  "generated_at_utc": "2026-09-25T09:33:39+00:00",
+  "generated_at_utc": "2026-09-25T12:28:43+00:00",
   "repository": "https://github.com/E4CE-UA/awareness-without-synthesis",
   "git": {
-    "commit": "107d9ba539973bbf234ced88ad3aeca7b7f5e28b",
-    "describe": "107d9ba-dirty",
+    "commit": "f00c3e49a0d60d8640fb3e51cae880ed2f4c682e",
+    "describe": "f00c3e4-dirty",
     "dirty": true,
     "note": "'commit' is HEAD at generation time. A record committed into the repository necessarily names its own parent commit, because writing the file changes the tree. Content integrity is pinned by 'file_digests_sha256', which 'make verify-provenance' checks independently of git."
   },
@@ -45,7 +45,7 @@
     "aws_align/align.py": "933c1172592df3dcc5a593194081483c7508e5534cfdabdb8ded38e3f7ecb5de",
     "aws_align/cli.py": "381f748151da65102e16d8513f8575434391994cc73e1cd03ea23fd65532f163",
     "aws_align/csc.py": "94776cc153d63fd9c02cef0201b84d1b7dde98ef8193424881aec9f7990ac706",
-    "aws_align/fragmentation.py": "d4b4bb789d8b8034eef642d2204a9bf5fd44e7244a44df69518505b76b9aef71",
+    "aws_align/fragmentation.py": "a84f52d9de45337ca5887e4fd9bb1df1bf3268625d1d02fbf123465087aec56f",
     "aws_align/io.py": "8b1dbef4b3f5a728c04f0057d0f54cb36d5e123a619a81ce67bebb657e2afa4e",
     "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "tests/test_align.py": "36a88a34898b06b96f9d037c41adaabafb1d887ed59ce6f22fedecb31a6b9473",
